@@ -1,0 +1,56 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      acks: all
+      batch-size: 16384
+      buffer-memory: 33554432
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 0
+    consumer:
+      group-id: test
+      #消費方式: 在有提交記錄的時候，earliest與latest是一樣的，從提交記錄的下一條開始消費
+      # earliest：無提交記錄，從頭開始消費
+      #latest：無提交記錄，從最新的消息的下一條開始消費
+      auto-offset-reset: earliest
+      enable-auto-commit: true #是否自動提交偏移量offset
+      auto-commit-interval: 1s #前提是 enable-auto-commit=true。自動提交的頻率
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      max-poll-records: 2
+      properties:
+        #如果在這個時間內沒有收到心跳，該消費者會被踢出組並觸發{組再平衡 rebalance}
+        session.timeout.ms: 120000
+        #最大消費時間。此決定了獲取消息后提交偏移量的最大時間，超過設定的時間（默認5分鐘），服務端也會認為該消費者失效。踢出並再平衡
+        max.poll.interval.ms: 300000
+        #配置控制客戶端等待請求響應的最長時間。
+        #如果在超時之前沒有收到響應，客戶端將在必要時重新發送請求，
+        #或者如果重試次數用盡，則請求失敗。
+        request.timeout.ms: 60000
+        #訂閱或分配主題時，允許自動創建主題。0.11之前，必須設置false
+        allow.auto.create.topics: true
+        #poll方法向協調器發送心跳的頻率，為session.timeout.ms的三分之一
+        heartbeat.interval.ms: 40000
+        #每個分區里返回的記錄最多不超max.partitions.fetch.bytes 指定的字節
+        #0.10.1版本后 如果 fetch 的第一個非空分區中的第一條消息大於這個限制
+        #仍然會返回該消息，以確保消費者可以進行
+        #max.partition.fetch.bytes=1048576  #1M
+    listener:
+      #當enable.auto.commit的值設置為false時，該值會生效；為true時不會生效
+      #manual_immediate:需要手動調用Acknowledgment.acknowledge()后立即提交
+      #ack-mode: manual_immediate
+      missing-topics-fatal: true #如果至少有一個topic不存在，true啟動失敗。false忽略
+      #type: single #單條消費？批量消費？ #批量消費需要配合 consumer.max-poll-records
+      type: batch
+      concurrency: 2 #配置多少，就為為每個消費者實例創建多少個線程。多出分區的線程空閑
+    template:
+      default-topic: "test"
+
+  #log4j2
+  logging:
+    config: classpath:log4j2.xml
+    level:
+      cn.jay.repository: trace
+server:
+  port: 8080

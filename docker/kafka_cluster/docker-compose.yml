@@ -1,0 +1,57 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    environment:
+      - ZOO_ENABLE_AUTH=no  # 禁用身份驗證。
+      - ALLOW_ANONYMOUS_LOGIN=yes  # 允許匿名登錄。
+    ports:
+      - "2181:2181"  # 將容器的 2181 端口映射到主機的 2181 端口。
+
+  kafka1:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=1  # 設置此 broker 的 ID 為 1。
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092  # 配置監聽地址為 9092 端口。
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://172.24.10.251:9092  # 廣播給客戶端的地址 需要依照自己的宿主機ip ipconfig en0。
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181  # 指定連接的 Zookeeper 地址。
+      - ALLOW_PLAINTEXT_LISTENER=yes  # 允許使用明文監聽器。
+    ports:
+      - "9092:9092"
+    depends_on:  # 指定服務依賴關係，確保 Zookeeper 啟動后再啟動 Kafka 1。
+      - zookeeper
+    volumes:
+      - ./kafka1:/bitnami/kafka  # 將主機的 ./kafka1 目錄掛載到容器的 /bitnami/kafka 目錄。
+
+  kafka2:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=2
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9093
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://172.24.10.251:9093
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9093:9093"
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./kafka2:/bitnami/kafka
+
+  kafka3:
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_BROKER_ID=3
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9094
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://172.24.10.251:9094
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9094:9094"
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./kafka3:/bitnami/kafka
