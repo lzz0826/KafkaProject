@@ -35,9 +35,9 @@ Spark <br />
 <br />
 <br />
 
-## Kafka 生產數據 事務處理 確保原子性
+## Kafka 生產數據 事務處理
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/3.png)
-## 事務性寫入
+## 事務性寫入 確保原子性
 Kafka 的 Producer 可以啟動一個事務，在這個事務中，Producer 可以向多個 Topic 或 Partition 發送訊息，所有訊息要麼全部成功提交（commit），要麼全部回滾（abort）。這樣可以保證資料的一致性。<br />
 消費者可以讀取來自多個 Partition 的資料，然後將處理後的結果再次寫入 Kafka。使用事務時，這些操作可以作為一個原子單元進行，保證「一次且僅一次（exactly-once）」的處理語義，避免重複或丟失資料。<br />
 ### 事務隔離級別
