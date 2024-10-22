@@ -9,7 +9,8 @@ Spark <br />
 - Broker：Kafka 的伺服器，負責儲存和分發訊息。 <br />
 - Topic：訊息分類的邏輯單位。 <br />
 
-
+<br />
+<br />
 
 ## 架構:
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/1.png)
@@ -31,10 +32,12 @@ Spark <br />
 - 剩下的副本稱為 Follower，它們會從 Leader 副本中複製資料，保持資料同步。<br />
 - Follower 副本不參與讀寫操作，只負責同步資料。<br />
 
+<br />
+<br />
 
 ## Kafka 生產數據 事務處理 確保原子性
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/3.png)
-### 事務性寫入
+## 事務性寫入
 Kafka 的 Producer 可以啟動一個事務，在這個事務中，Producer 可以向多個 Topic 或 Partition 發送訊息，所有訊息要麼全部成功提交（commit），要麼全部回滾（abort）。這樣可以保證資料的一致性。<br />
 消費者可以讀取來自多個 Partition 的資料，然後將處理後的結果再次寫入 Kafka。使用事務時，這些操作可以作為一個原子單元進行，保證「一次且僅一次（exactly-once）」的處理語義，避免重複或丟失資料。<br />
 ### 事務隔離級別
@@ -42,7 +45,7 @@ Kafka 的 Producer 可以啟動一個事務，在這個事務中，Producer 可�
 - Read Committed：消費者只能讀取已提交的事務數據，未提交的資料對消費者是不可見的。<br />
 
 
-## ACK（Acknowledgment 確認機制 確保可靠性
+## ACK（Acknowledgment確認機制) 確保可靠性
 保證訊息可靠傳遞的機制，Producer 在向 Broker 發送訊息時，會根據設定的 ACK 值決定如何確認訊息是否成功寫入 Kafka 集群。這直接影響資料的可靠性和性能。<br />
 ### ACK 機制對應的可靠性與效能：
 - acks=0：最高效能，最低可靠性。<br />
@@ -76,7 +79,8 @@ Kafka 的 Producer 可以啟動一個事務，在這個事務中，Producer 可�
 ### 與事務的關聯：
 -  幂等性是實現 Kafka 事務性操作的一個基礎。當幂等 Producer 與 Kafka 的 事務性操作 結合時，Kafka 可以實現「一次且僅一次」（Exactly Once）的語義，不僅確保訊息不會重複，還能確保跨多個 Topic 和 Partition 的操作要麼全部成功，要麼全部失敗。<br />
 
-
+<br />
+<br />
 
 ## 消費數據
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/4.png)
@@ -84,6 +88,9 @@ Kafka 的 Producer 可以啟動一個事務，在這個事務中，Producer 可�
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/6.png)
 ### 流程
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/7.png)
+
+<br />
+<br />
 
 ## 選舉
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/8.png)
