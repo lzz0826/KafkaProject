@@ -94,3 +94,16 @@ Kafka 的 Producer 可以啟動一個事務，在這個事務中，Producer 可�
 
 ## 選舉
 ![image](https://github.com/lzz0826/KafkaProject/blob/main/img/8.png)
+通過 Zookeeper 協調 Broker 的狀態，確保每個 Partition 有一個 Leader 副本來處理請求，從而實現高可用性和一致性。選舉過程能夠快速響應 Broker 故障和集群拓撲變化，確保系統的穩定運行。<br />
+### 選舉的觸發情況:
+- Leader 副本失效：當某個 Leader 副本因故障或網絡問題失效時，需要進行新的選舉來選擇一個新的 Leader。<br />
+- Broker 重啟：當一個 Broker 重啟並重新加入集群時，可能會引發選舉。<br />
+- 集群拓撲變化：如果集群中的 Broker 數量發生變化（如增加或刪除 Broker），這也會觸發選舉。<br />
+
+
+
+
+
+
+
+
